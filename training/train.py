@@ -87,9 +87,9 @@ def train_and_evaluate(max_epochs=20):
 
         # Validation accuracy
         val_accuracy = val_correct / len(val_loader.dataset)
-        val_acc.append(val_accuracy)
+        #val_acc.append(val_accuracy)
 
-        scheduler.step(val_acc)
+        scheduler.step(val_accuracy)
 
         print(f"Epoch [{epoch + 1}/{max_epochs}], Validation Accuracy: {val_accuracy * 100:.2f}%")
 
