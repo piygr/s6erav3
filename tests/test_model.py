@@ -6,11 +6,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from training.train import train_and_evaluate
 
 if __name__ == "__main__":
-    epochs = 1
+    epochs = 20
     total_params, train_accuracy, val_accuracy = train_and_evaluate(max_epochs=epochs)
 
     if total_params > 20000:
-        print(total_params)
         raise ValueError(f'Number of model parameters exceed 20k limit: {total_params}')
 
     if val_accuracy < 99.4:

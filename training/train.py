@@ -73,8 +73,8 @@ def train_and_evaluate(max_epochs=20):
             total_correct += (preds == labels).sum().item()
 
         # Training accuracy
-        train_accuracy = total_correct / len(train_loader.dataset)
-        print(f"Epoch [{epoch + 1}/{max_epochs}], Training Accuracy: {train_accuracy * 100:.2f}%")
+        train_accuracy = 100 * total_correct / len(train_loader.dataset)
+        print(f"Epoch [{epoch + 1}/{max_epochs}], Training Accuracy: {train_accuracy:.2f}%")
 
         # Validation loop
         model.eval()
@@ -86,12 +86,12 @@ def train_and_evaluate(max_epochs=20):
                 val_correct += (preds == labels).sum().item()
 
         # Validation accuracy
-        val_accuracy = val_correct / len(val_loader.dataset)
+        val_accuracy = 100 * val_correct / len(val_loader.dataset)
         #val_acc.append(val_accuracy)
 
         scheduler.step(val_accuracy)
 
-        print(f"Epoch [{epoch + 1}/{max_epochs}], Validation Accuracy: {val_accuracy * 100:.2f}%")
+        print(f"Epoch [{epoch + 1}/{max_epochs}], Validation Accuracy: {val_accuracy:.2f}%")
 
         if maxval_accuracy < val_accuracy:
             maxval_accuracy = val_accuracy
