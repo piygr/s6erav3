@@ -36,8 +36,8 @@ def train_and_evaluate(max_epochs=20):
 
     total_params = sum(p.numel() for p in model.parameters())
     print(f"Total Parameters: {total_params}")
+
     train_accuracy = 0
-    val_accuracy = 0
     maxval_accuracy = 0
     for epoch in range(max_epochs):
         # Training loop
