@@ -39,7 +39,7 @@ def train_and_evaluate(max_epochs=20):
     train_accuracy = 0
     val_accuracy = 0
     maxval_accuracy = 0
-    for epoch in range(max_epochs=20):
+    for epoch in range(max_epochs):
         # Training loop
         model.train()
         total_correct = 0
