@@ -13,8 +13,9 @@ if __name__ == "__main__":
         print(total_params)
         raise ValueError(f'Number of model parameters exceed 20k limit: {total_params}')
 
-    '''if val_accuracy < 99.4:
+    if val_accuracy < 99.4:
+        print(f'Validation accuracy too low: {val_accuracy}%')
         raise ValueError(f'Validation accuracy too low: {val_accuracy}%')
     else:
-        print(f'Model training successful: {val_accuracy}% accuracy in {epochs} epochs')'''
+        print(f'Model training successful: {val_accuracy}% accuracy in {epochs} epochs')
 
