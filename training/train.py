@@ -5,6 +5,24 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from models.model import MNISTModel
 
+train_transforms = transforms.Compose([
+    transforms.RandomRotation((-10., 10.), fill=0),
+    transforms.Resize((28, 28)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,)),
+    ])
+
+# Test data transformations
+test_transforms = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,))
+    ])
+
+
+def get_scheduler(optimizer):
+    #return optim.lr_scheduler.StepLR(optimizer, step_size=6, gamma=0.1, verbose=True)
+    return optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=1, threshold=0.001, threshold_mode='abs', eps=0.001, verbose=True)
+
 def get_model_size(model):
     param_size = 0
     for param in model.parameters():
@@ -17,12 +35,9 @@ def get_model_size(model):
 
 def train_and_evaluate(max_epochs=20):
     # Transformations and data loading
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.5,), (0.5,))
-    ])
-    train_dataset = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
-    val_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
+
+    train_dataset = datasets.MNIST(root='./data', train=True, transform=train_transforms, download=True)
+    val_dataset = datasets.MNIST(root='./data', train=False, transform=test_transforms, download=True)
     train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False)
 
@@ -32,7 +47,8 @@ def train_and_evaluate(max_epochs=20):
     print(f"Model Size: {model_size:.2f} MB")
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
+    scheduler = get_scheduler(optimizer)
 
     total_params = sum(p.numel() for p in model.parameters())
     print(f"Total Parameters: {total_params}")
