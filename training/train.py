@@ -5,23 +5,12 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from models.model import MNISTModel
 
-train_transforms = transforms.Compose([
-    transforms.RandomRotation((-10., 10.), fill=0),
-    transforms.Resize((28, 28)),
-    transforms.ToTensor(),
-    transforms.Normalize((0.1307,), (0.3081,)),
-    ])
 
-# Test data transformations
-test_transforms = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.1307,), (0.3081,))
-    ])
 
 
 def get_scheduler(optimizer):
-    #return optim.lr_scheduler.StepLR(optimizer, step_size=6, gamma=0.1, verbose=True)
     return optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=1, threshold=0.001, threshold_mode='abs', eps=0.001, verbose=True)
+
 
 def get_model_size(model):
     param_size = 0
@@ -35,6 +24,18 @@ def get_model_size(model):
 
 def train_and_evaluate(max_epochs=20):
     # Transformations and data loading
+    train_transforms = transforms.Compose([
+        transforms.RandomRotation((-10., 10.), fill=0),
+        transforms.Resize((28, 28)),
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,)),
+    ])
+
+    # Test data transformations
+    test_transforms = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
 
     train_dataset = datasets.MNIST(root='./data', train=True, transform=train_transforms, download=True)
     val_dataset = datasets.MNIST(root='./data', train=False, transform=test_transforms, download=True)
@@ -55,6 +56,7 @@ def train_and_evaluate(max_epochs=20):
 
     train_accuracy = 0
     maxval_accuracy = 0
+    val_acc = []
     for epoch in range(max_epochs):
         # Training loop
         model.train()
@@ -85,6 +87,10 @@ def train_and_evaluate(max_epochs=20):
 
         # Validation accuracy
         val_accuracy = val_correct / len(val_loader.dataset)
+        val_acc.append(val_accuracy)
+
+        scheduler.step(val_acc)
+
         print(f"Epoch [{epoch + 1}/{max_epochs}], Validation Accuracy: {val_accuracy * 100:.2f}%")
 
         if maxval_accuracy < val_accuracy:
