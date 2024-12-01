@@ -3,7 +3,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from models.model import MNISTModel
+from training.train import train_and_evaluate
 
 if __name__ == "__main__":
     epochs = 20
